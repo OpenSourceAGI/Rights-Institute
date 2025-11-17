@@ -33,6 +33,10 @@
   "include": [
     "next-env.d.ts",
     "app/**/*.tsx",
+    "app/**/*.ts",
+    "worker/**/*.ts",
+    "db/**/*.ts",
+    "lib/**/*.ts",
     ".next/types/**/*.ts",
     "out/types/**/*.ts"
   ],
