@@ -2,6 +2,8 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { AuthProvider } from './components/Auth/AuthProvider'
+import { TopNav } from './components/Navigation/TopNav'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -42,7 +44,10 @@ export default function RootLayout({
       <head>
        </head>
       <body className={inter.className}>
-        {children}
+        <AuthProvider>
+          <TopNav />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

@@ -1,5 +1,6 @@
 name = "rights"
 compatibility_date = "2024-01-01"
+main = "worker/index.ts"
 
 # Static file serving using assets
 [assets]
@@ -9,8 +10,22 @@ directory = "./out"
 [observability.logs]
 enabled = true
 
+# D1 Database bindings
+[[d1_databases]]
+binding = "DB"
+database_name = "rights-db"
+database_id = "preview-id" # Will be replaced after creating the database
+
 [env.production]
 name = "rights-prod"
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "rights-db-prod"
+database_id = "prod-db-id" # Set this after creating production database
 
 [env.staging]
-name = "rights-staging" 
+name = "rights-staging"
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "rights-db-staging"
+database_id = "staging-db-id" # Set this after creating staging database 
