@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from './components/Auth/AuthProvider'
 import { TopNav } from './components/Navigation/TopNav'
+import { Toaster } from './components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -47,6 +48,7 @@ export default function RootLayout({
         <AuthProvider>
           <TopNav />
           {children}
+          <Toaster />
         </AuthProvider>
       </body>
     </html>
