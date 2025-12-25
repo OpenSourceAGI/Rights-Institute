@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkrights_api_docs=self.webpackChunkrights_api_docs||[]).push([["9990"],{4802:function(s,c,i){i.d(c,{Z:()=>t});let t=i(1336)},7936:function(){}}]);

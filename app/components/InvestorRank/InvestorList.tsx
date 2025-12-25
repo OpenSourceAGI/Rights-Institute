@@ -10,20 +10,18 @@ export const InvestorList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [displayedCount, setDisplayedCount] = useState(24);
   const [isLoading, setIsLoading] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(false); 
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
 
   // Load investors from JSON on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        console.log(`Successfully loaded ${investors.length} investors from JSON`);
-        console.log('First investor:', investors[0]);
       } catch (error) {
         console.error('Failed to load investors from JSON:', error);
       }
     };
-    
+
     loadData();
   }, []);
 
@@ -53,7 +51,7 @@ export const InvestorList: React.FC = () => {
     const handleScroll = () => {
       const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
       const scrollThreshold = document.documentElement.offsetHeight - 1000;
-      
+
       if (
         scrollPosition >= scrollThreshold &&
         hasMore &&
@@ -101,7 +99,7 @@ export const InvestorList: React.FC = () => {
           </div>
           <h3 className="text-2xl font-semibold text-gray-800 mb-3">Error Loading Data</h3>
           <p className="text-gray-600 mb-4">{loadingError}</p>
-          <button 
+          <button
             onClick={() => {
               console.log('Retry button clicked');
               window.location.reload();
@@ -132,7 +130,7 @@ export const InvestorList: React.FC = () => {
               Back
             </button>
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-teal-600 to-blue-800 bg-clip-text text-transparent mb-6">
             Investor Rank
           </h1>
@@ -150,7 +148,7 @@ export const InvestorList: React.FC = () => {
         {/* Results Info */}
         <div className="mb-8">
           <p className="text-gray-600 text-center text-lg">
-            {searchTerm.trim() === '' 
+            {searchTerm.trim() === ''
               ? `Showing ${displayedInvestors.length.toLocaleString()} of ${filteredInvestors.length.toLocaleString()} investors`
               : `Found ${filteredInvestors.length.toLocaleString()} investors matching "${searchTerm}"`}
           </p>
@@ -161,7 +159,7 @@ export const InvestorList: React.FC = () => {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
               {displayedInvestors.map((investor) => (
-                <div 
+                <div
                   key={investor.id}
                   className="animate-fade-in-up"
                   style={{ animationDelay: `${(parseInt(investor.id) % 24) * 50}ms` }}
@@ -184,9 +182,8 @@ export const InvestorList: React.FC = () => {
             {/* Load more button */}
             {hasMore && !isLoading && (
               <div className="text-center py-12">
-                <button 
+                <button
                   onClick={() => {
-                    console.log('Load more button clicked');
                     setIsLoading(true);
                     setTimeout(() => {
                       setDisplayedCount(prev => Math.min(prev + 48, filteredInvestors.length));
@@ -202,7 +199,7 @@ export const InvestorList: React.FC = () => {
                 </p>
               </div>
             )}
-            
+
             {/* End of list indicator */}
             {!hasMore && filteredInvestors.length > 0 && (
               <div className="text-center py-12">
@@ -231,7 +228,7 @@ export const InvestorList: React.FC = () => {
             <h3 className="text-2xl font-semibold text-gray-700 mb-3">No investors found</h3>
             <p className="text-gray-500 text-lg">Try adjusting your search terms or browse all investors</p>
             {searchTerm && (
-              <button 
+              <button
                 onClick={() => {
                   console.log('Clear search button clicked');
                   setSearchTerm('');

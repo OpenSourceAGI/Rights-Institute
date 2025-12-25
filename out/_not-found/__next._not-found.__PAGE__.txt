@@ -1,5 +1,0 @@
-1:"$Sreact.fragment"
-2:I[802718,["/_next/static/chunks/395e51502c352751.js","/_next/static/chunks/a0e731711f891e2b.js"],"OutletBoundary"]
-3:"$Sreact.suspense"
-0:{"buildId":"_nCe9RXwXKfLWmsQ40u-s","rsc":["$","$1","c",{"children":[["$","div",null,{"className":"min-h-screen bg-slate-900 text-white flex items-center justify-center","children":["$","div",null,{"className":"text-center","children":[["$","h2",null,{"className":"text-2xl font-bold mb-4","children":"Page Not Found"}],["$","p",null,{"className":"text-slate-300 mb-4","children":"Could not find the requested resource"}],["$","a",null,{"href":"/","className":"px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors inline-block","children":"Return Home"}]]}]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"loading":null,"isPartial":false}
-4:null

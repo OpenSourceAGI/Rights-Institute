@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkrights_api_docs=self.webpackChunkrights_api_docs||[]).push([["2061"],{8544:function(s,c,i){i.r(c)}}]);

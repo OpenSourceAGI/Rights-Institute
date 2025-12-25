@@ -10,14 +10,14 @@ import { grab } from 'grab-api.js';
 import codecraftStudioData, { sampleLicenseDataByToken } from '../../sample-data/codecraft-studio';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { 
-  FileText, 
+import {
+  FileText,
   Copyright,
-  Scale, 
-  Users, 
-  Coins, 
-  Shield, 
-  BookOpen, 
+  Scale,
+  Users,
+  Coins,
+  Shield,
+  BookOpen,
   Menu,
   X,
   Copy,
@@ -78,7 +78,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
 
   // Get sample data based on slug
   const sampleData = sampleLicenseDataByToken[sampleSlug] || sampleLicenseDataByToken['codecraft-studio'];
-  
+
   // Use sample data values
   const year = sampleData.config.defaultYear;
   const fullname = sampleData.authors[0]?.name || 'Jane Developer';
@@ -91,7 +91,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
 
   // Get project token from URL path (client-side routing)
   const [urlToken, setUrlToken] = useState<string | null>(null);
-  
+
   useEffect(() => {
     // Parse token from URL path
     const parseToken = () => {
@@ -100,13 +100,13 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
       const token = tokenMatch ? tokenMatch[1] : null;
       setUrlToken(token);
     };
-    
+
     // Parse initial token
     parseToken();
-    
+
     // Listen for browser navigation (back/forward buttons)
     window.addEventListener('popstate', parseToken);
-    
+
     return () => {
       window.removeEventListener('popstate', parseToken);
     };
@@ -124,7 +124,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
   const handleProjectClick = (projectName) => {
     // Generate a random token
     const randomToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    
+
     // Navigate to the project license page using client-side routing
     window.history.pushState({}, '', `/prosper/${randomToken}`);
     // Update the URL token state
@@ -135,7 +135,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
   const generateCopyrightText = () => {
     const individualAuthors = authors.map(author => author.name).join(', ');
     const orgAuthors = organizations.map(org => org.name).join(', ');
-    
+
     let copyrightText = `© ${year}`;
     if (authors.length > 0) {
       copyrightText += ` ${individualAuthors}`;
@@ -143,7 +143,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
     if (organizations.length > 0) {
       copyrightText += authors.length > 0 ? `, ${orgAuthors}` : ` ${orgAuthors}`;
     }
-    
+
     return copyrightText;
   };
 
@@ -185,19 +185,19 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
     setSidebarOpen(false);
   };
 
-    // Handle scroll to update active section
+  // Handle scroll to update active section
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll('section[id]');
       let currentSection = 'terms';
-      
+
       sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
         if (rect.top <= 100 && rect.bottom >= 100) {
           currentSection = section.id;
         }
       });
-      
+
       setActiveSection(currentSection);
     };
 
@@ -205,21 +205,20 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-    // Fetch project data from API when token is present
+  // Fetch project data from API when token is present
   useEffect(() => {
     if (urlToken) {
       const fetchProjectData = async () => {
         try {
           const response = await fetch(`/api/project-license/${urlToken}`);
-            const data = await response.json();
-            console.log('Project data loaded:', data);
-            // In a real implementation, you would update the component state with the fetched data
-            // For now, we'll just log it
+          const data = await response.json();
+          // In a real implementation, you would update the component state with the fetched data
+          // For now, we'll just log it
         } catch (error) {
           console.error('Error fetching project data:', error);
         }
       };
-      
+
       fetchProjectData();
     }
   }, [urlToken]);
@@ -229,7 +228,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
         {/* Large Background Text with Shine Effect */}
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-          <h1 
+          <h1
             className="text-[20vw] sm:text-[15vw] lg:text-[12vw] font-black text-gray-100/30 select-none transform -rotate-12 tracking-wider relative overflow-hidden"
             style={{
               background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
@@ -240,7 +239,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
             {codecraftStudioData.backgroundText.text}
           </h1>
         </div>
-        
+
         {/* Shine Animation Keyframes */}
         <style jsx>{`
           @keyframes shine {
@@ -270,7 +269,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                 </a>
               </div>
               <div className="flex items-center space-x-4">
-                <a 
+                <a
                   href="/"
                   className="hidden md:flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
                 >
@@ -296,11 +295,10 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
               return (
                 <div key={section.id} className="group relative">
                   <button
-                    className={`w-10 h-10 p-0 rounded-lg transition-all duration-200 flex items-center justify-center ${
-                      activeSection === section.id 
-                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg transform scale-110' 
+                    className={`w-10 h-10 p-0 rounded-lg transition-all duration-200 flex items-center justify-center ${activeSection === section.id
+                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg transform scale-110'
                         : 'hover:bg-indigo-50 hover:text-indigo-600 hover:scale-105 text-gray-600'
-                    }`}
+                      }`}
                     onClick={() => scrollToSection(section.id)}
                   >
                     <Icon className="h-4 w-4" />
@@ -320,7 +318,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-lg font-semibold text-gray-900">Contents</h2>
-                    <button 
+                    <button
                       className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
                       onClick={() => setSidebarOpen(false)}
                     >
@@ -333,11 +331,10 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                       return (
                         <button
                           key={section.id}
-                          className={`w-full flex items-center justify-start h-auto py-3 px-3 rounded-lg transition-all duration-200 ${
-                            activeSection === section.id 
-                              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' 
+                          className={`w-full flex items-center justify-start h-auto py-3 px-3 rounded-lg transition-all duration-200 ${activeSection === section.id
+                              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
                               : 'hover:bg-indigo-50 hover:text-indigo-600 text-gray-700'
-                          }`}
+                            }`}
                           onClick={() => scrollToSection(section.id)}
                         >
                           <Icon className="h-4 w-4 mr-3 shrink-0" />
@@ -361,13 +358,13 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                     <div className="relative w-full max-w-4xl mx-auto">
                       {/* Background Image */}
                       <div className="relative w-full h-64 lg:h-80 rounded-2xl overflow-hidden shadow-2xl">
-                        <img 
-                          src="https://i.imgur.com/I34iD0f.png" 
-                          alt="PROSPER License Header" 
+                        <img
+                          src="https://i.imgur.com/I34iD0f.png"
+                          alt="PROSPER License Header"
                           className="w-full h-full object-contain object-center transform hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-                        
+
                         {/* Frosted Glass Overlay with Text */}
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-4 lg:p-6 shadow-xl max-w-xl mx-4">
@@ -379,14 +376,14 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                           </div>
                         </div>
                       </div>
-                      
-                      {/* Subtitle Below Header */}
-                                        <div className="text-center mt-6 lg:mt-8">
-                    <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 font-medium leading-relaxed max-w-3xl mx-auto px-4">
-                      Permissionless Reuse for an Open Society of Public & Enterprise Review
-                    </p>
 
-                  </div>
+                      {/* Subtitle Below Header */}
+                      <div className="text-center mt-6 lg:mt-8">
+                        <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 font-medium leading-relaxed max-w-3xl mx-auto px-4">
+                          Permissionless Reuse for an Open Society of Public & Enterprise Review
+                        </p>
+
+                      </div>
                     </div>
                   </div>
 
@@ -413,14 +410,14 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                       <Share2 className="h-3 w-3" />
                       Creative Commons
                     </Badge>
-                              </div>
+                  </div>
                   {/* License Terms */}
                   <section id="terms" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center drop-shadow-md">
                       <FileText className="h-6 w-6 mr-3 text-emerald-600" />
                       License Terms
                     </h2>
-                    
+
                     {/* Copyright Information */}
                     <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200 shadow-lg mb-6">
                       <CardContent className="p-6">
@@ -508,7 +505,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                                     </div>
                                   );
                                 })}
-                                
+
                                 {/* Organizational Authors */}
                                 {organizations.map((org, index) => {
                                   const RoleIcon = roleIcons[org.role] || Building2;
@@ -557,7 +554,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                             </div>
                           )}
 
-                          
+
                         </div>
                       </CardContent>
                     </Card>
@@ -617,7 +614,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                       <Scale className="h-6 w-6 mr-3 text-purple-600" />
                       Dual Licensing Structure
                     </h2>
-                    
+
                     <div className="grid gap-6 md:grid-cols-2">
                       <Card className="bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200 shadow-lg transform hover:scale-105 transition-all duration-300">
                         <CardContent className="p-6">
@@ -671,7 +668,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                       <Coins className="h-6 w-6 mr-3 text-yellow-600" />
                       PROSPER Credit System
                     </h2>
-                    
+
                     <p className="text-gray-700 leading-relaxed mb-6">
                       The PROSPER Credit system provides transparent creator compensation through:
                     </p>
@@ -866,12 +863,12 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                           <p className="text-gray-700 leading-relaxed mb-4">
                             The PROSPER License addresses the fundamental tension between open source accessibility and creator sustainability. Unlike purely permissive licenses that provide no revenue model, or restrictive copyleft licenses that can deter enterprise adoption, PROSPER creates a sustainable middle path that encourages innovation while ensuring fair creator compensation.
                           </p>
-                          
+
                           <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-4 flex items-center">
                             <Users className="h-5 w-5 mr-2 text-teal-600" />
                             Stakeholder Benefits
                           </h3>
-                          
+
                           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
                             <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-md transform hover:scale-105 transition-all duration-300">
                               <CardContent className="p-4">
@@ -1025,7 +1022,7 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                     </Badge>
                   </DialogTitle>
                 </DialogHeader>
-                
+
                 <div className="space-y-6">
                   {/* Basic Info */}
                   <div className="grid gap-4 md:grid-cols-2">
@@ -1049,9 +1046,9 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                           <Globe className="h-4 w-4 mr-2 text-emerald-600" />
                           Website
                         </h3>
-                        <a 
-                          href={`https://${selectedEntity.website}`} 
-                          target="_blank" 
+                        <a
+                          href={`https://${selectedEntity.website}`}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-emerald-600 hover:underline"
                         >
@@ -1065,9 +1062,9 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                           <Code className="h-4 w-4 mr-2 text-emerald-600" />
                           GitHub
                         </h3>
-                        <a 
-                          href={`https://${selectedEntity.github}`} 
-                          target="_blank" 
+                        <a
+                          href={`https://${selectedEntity.github}`}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-emerald-600 hover:underline"
                         >
@@ -1116,8 +1113,8 @@ export default function PROSPERLicense({ sampleSlug = 'codecraft-studio' }: PROS
                     </h3>
                     <div className="space-y-2">
                       {selectedEntity.projects.map((project, index) => (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:border-gray-300 cursor-pointer transition-all duration-200 group"
                           onClick={() => handleProjectClick(project.name)}
                         >

@@ -10,12 +10,10 @@ const nextConfig = {
     domains: ['i.imgur.com'],
     unoptimized: true,
   },
-  output: 'export',
   trailingSlash: true,
   poweredByHeader: false,
   compress: true,
   reactStrictMode: false,
-  distDir: 'out',
 }
 
 module.exports = nextConfig 
