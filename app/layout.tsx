@@ -5,8 +5,6 @@ import './globals.css'
 import { AuthProvider } from './components/Auth/AuthProvider'
 import { GoogleOneTap } from './components/Auth/GoogleOneTap'
 
-import { TopNav } from './components/Navigation/TopNav'
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -46,10 +44,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <GoogleOneTap />
-          <TopNav />
-          <div className="pt-16">
-            {children}
-          </div>
+          {children}
         </AuthProvider>
       </body>
     </html>

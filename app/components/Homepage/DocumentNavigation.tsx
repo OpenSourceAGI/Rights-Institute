@@ -19,6 +19,7 @@ import React from 'react';
 import Footer from './Footer';
 import { useSession, signIn } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { AuthButton } from '../Auth/AuthButton';
 
 import {
   FileText,
@@ -256,6 +257,11 @@ const DocumentNavigation: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white p-4">
+      {/* Floating Google Sign-in Button */}
+      <div className="fixed top-4 right-4 z-50">
+        <AuthButton />
+      </div>
+
       <div className="max-w-4xl mx-auto">
         {/* Heading Art Background */}
         <div className="relative mb-12 overflow-hidden rounded-3xl h-64 md:h-80">
