@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -146,9 +146,31 @@ Permissionless Reuse for an Open Society of Public & Enterprise Review
   },
 ];
 
-export default function DashboardPage() {
-  const router = useRouter();
+// Component that uses search params - must be wrapped in Suspense
+function SearchParamsHandler({
+  user,
+  onCreateFromTemplate
+}: {
+  user: any;
+  onCreateFromTemplate: (docType: typeof documentTypes[0]) => void;
+}) {
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const type = searchParams.get("type");
+    if (type && user) {
+      const docType = documentTypes.find((dt) => dt.type === type);
+      if (docType) {
+        onCreateFromTemplate(docType);
+      }
+    }
+  }, [searchParams, user, onCreateFromTemplate]);
+
+  return null;
+}
+
+function DashboardContent() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -161,16 +183,6 @@ export default function DashboardPage() {
   useEffect(() => {
     checkAuth();
   }, []);
-
-  useEffect(() => {
-    const type = searchParams.get("type");
-    if (type && user) {
-      const docType = documentTypes.find((dt) => dt.type === type);
-      if (docType) {
-        handleCreateFromTemplate(docType);
-      }
-    }
-  }, [searchParams, user]);
 
   const checkAuth = async () => {
     const session = await authClient.getSession();
@@ -251,9 +263,7 @@ export default function DashboardPage() {
       if (response.ok) {
         setIsEditing(false);
         loadDocuments();
-        if (searchParams.get("type")) {
-          router.push("/dashboard");
-        }
+        router.push("/dashboard");
       } else {
         const error = await response.json();
         alert(error.error || "Failed to save document");
@@ -325,6 +335,9 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <Suspense fallback={null}>
+        <SearchParamsHandler user={user} onCreateFromTemplate={handleCreateFromTemplate} />
+      </Suspense>
       {/* Header */}
       <header className="border-b border-gray-700/50 bg-gray-900/50 backdrop-blur-xl sticky top-0 z-10 shadow-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -552,5 +565,20 @@ export default function DashboardPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+        <div className="text-lg text-white flex items-center gap-3">
+          <div className="h-6 w-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          Loading your dashboard...
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
