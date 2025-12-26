@@ -178,3 +178,23 @@ export const articleQA = sqliteTable('articleQA', {
     .notNull()
     .default(sql`(unixepoch())`),
 });
+
+export const documents = sqliteTable('documents', {
+  id: text('id').primaryKey(),
+  userId: text('userId')
+    .notNull()
+    .references(() => user.id),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  type: text('type'),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: integer('updatedAt', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
