@@ -1,73 +1,180 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import { text, integer, sqliteTable } from 'drizzle-orm/sqlite-core';
 
-/**
- * Users table - stores user authentication information
- */
-export const users = sqliteTable('users', {
-  id: text('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
-  name: text('name'),
-  image: text('image'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+export const messages = sqliteTable('messages', {
+  id: integer('id').primaryKey(),
+  role: text('type', { enum: ['assistant', 'user', 'source'] }).notNull(),
+  chatId: text('chatId').notNull(),
+  userId: text('userId').references(() => user.id),
+  createdAt: text('createdAt')
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  messageId: text('messageId').notNull(),
+
+  content: text('content'),
+
+
+
+  
 });
 
-/**
- * Sessions table - stores user sessions
- */
-export const sessions = sqliteTable('sessions', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-  ipAddress: text('ip_address'),
-  userAgent: text('user_agent'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-});
+interface File {
+  name: string;
+  fileId: string;
+}
 
-/**
- * Accounts table - stores OAuth provider information
- */
-export const accounts = sqliteTable('accounts', {
+export const chats = sqliteTable('chats', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  provider: text('provider').notNull(), // 'google', etc.
-  providerAccountId: text('provider_account_id').notNull(),
-  accessToken: text('access_token'),
-  refreshToken: text('refresh_token'),
-  expiresAt: integer('expires_at', { mode: 'timestamp' }),
-  scope: text('scope'),
-  idToken: text('id_token'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-});
-
-/**
- * Verification tokens table - for email verification
- */
-export const verificationTokens = sqliteTable('verification_tokens', {
-  identifier: text('identifier').notNull(),
-  token: text('token').notNull().unique(),
-  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-});
-
-/**
- * Documents table - stores user-created custom documents
- */
-export const documents = sqliteTable('documents', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
-  content: text('content').notNull().default(''),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: text('createdAt').notNull(),
+  focusMode: text('focusMode').notNull(),
+  userId: text('userId').references(() => user.id),
+  files: text('files', { mode: 'json' })
+    .$type<File[]>()
+    .default(sql`'[]'`),
 });
 
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type Session = typeof sessions.$inferSelect;
-export type NewSession = typeof sessions.$inferInsert;
-export type Account = typeof accounts.$inferSelect;
-export type NewAccount = typeof accounts.$inferInsert;
-export type Document = typeof documents.$inferSelect;
-export type NewDocument = typeof documents.$inferInsert;
+export const user = sqliteTable('user', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: integer('emailVerified', {
+    mode: 'boolean',
+  }).notNull(),
+  image: text('image'),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  }).notNull(),
+  updatedAt: integer('updatedAt', {
+    mode: 'timestamp',
+  }).notNull(),
+});
+
+export const session = sqliteTable('session', {
+  id: text('id').primaryKey(),
+  expiresAt: integer('expiresAt', {
+    mode: 'timestamp',
+  }).notNull(),
+  token: text('token').notNull().unique(),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  }).notNull(),
+  updatedAt: integer('updatedAt', {
+    mode: 'timestamp',
+  }).notNull(),
+  ipAddress: text('ipAddress'),
+  userAgent: text('userAgent'),
+  userId: text('userId')
+    .notNull()
+    .references(() => user.id),
+});
+
+export const account = sqliteTable('account', {
+  id: text('id').primaryKey(),
+  accountId: text('accountId').notNull(),
+  providerId: text('providerId').notNull(),
+  userId: text('userId')
+    .notNull()
+    .references(() => user.id),
+  accessToken: text('accessToken'),
+  refreshToken: text('refreshToken'),
+  idToken: text('idToken'),
+  accessTokenExpiresAt: integer('accessTokenExpiresAt', {
+    mode: 'timestamp',
+  }),
+  refreshTokenExpiresAt: integer('refreshTokenExpiresAt', {
+    mode: 'timestamp',
+  }),
+  scope: text('scope'),
+  password: text('password'),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  }).notNull(),
+  updatedAt: integer('updatedAt', {
+    mode: 'timestamp',
+  }).notNull(),
+});
+
+export const verification = sqliteTable('verification', {
+  id: text('id').primaryKey(),
+  identifier: text('identifier').notNull(),
+  value: text('value').notNull(),
+  expiresAt: integer('expiresAt', {
+    mode: 'timestamp',
+  }).notNull(),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  }),
+  updatedAt: integer('updatedAt', {
+    mode: 'timestamp',
+  }),
+});
+
+export const favorites = sqliteTable('favorites', {
+  id: integer('id').primaryKey(),
+  userId: text('userId')
+    .notNull()
+    .references(() => user.id),
+  url: text('url').notNull(),
+  title: text('title'),
+  cite: text('cite'),
+  author: text('author'),
+  author_cite: text('author_cite'),
+  date: text('date'),
+  source: text('source'),
+  word_count: integer('word_count'),
+  html: text('html'),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
+
+export const articleCache = sqliteTable('articleCache', {
+  id: integer('id').primaryKey(),
+  url: text('url').notNull().unique(),
+  title: text('title'),
+  cite: text('cite'),
+  author: text('author'),
+  author_cite: text('author_cite'),
+  author_short: text('author_short'),
+  author_type: text('author_type'),
+  date: text('date'),
+  source: text('source'),
+  word_count: integer('word_count'),
+  html: text('html'),
+  followUpQuestions: text('followUpQuestions', {
+    mode: 'json',
+  })
+    .$type<string[]>()
+    .default(sql`'[]'`),
+  hitCount: integer('hitCount').notNull().default(0),
+  lastAccessed: integer('lastAccessed', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  expiresAt: integer('expiresAt', {
+    mode: 'timestamp',
+  }),
+});
+
+export const articleQA = sqliteTable('articleQA', {
+  id: integer('id').primaryKey(),
+  articleUrl: text('articleUrl')
+    .notNull()
+    .references(() => articleCache.url),
+  question: text('question').notNull(),
+  answer: text('answer').notNull(),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
