@@ -12,8 +12,11 @@
   },
   "scripts": {
     "build": "next build",
-    "serve": "bun run build && wrangler deploy --env production",
-    "dev": "next dev -p 9000"
+    "dev": "next dev",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:create": "npm create cloud-db"
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
@@ -79,6 +82,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.23",
+    "drizzle-kit": "^0.31.8",
     "fs-extra": "^11.3.3",
     "globals": "^16.5.0",
     "postcss": "^8.5.6",

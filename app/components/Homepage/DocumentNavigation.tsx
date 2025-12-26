@@ -219,7 +219,7 @@ const DocumentNavigation: React.FC = () => {
       href: '/understandings-problems',
       color: '#3b82f6',
       gradient: 'from-blue-500 to-cyan-500',
-      image: 'https://rights.institute/logo.png',
+      image: 'https://i.imgur.com/BLpvTxq.png',
       keywords: ['Philosophy', 'Consciousness', 'Complexity', 'Universe', 'Problems', 'Understanding']
     },
     {
