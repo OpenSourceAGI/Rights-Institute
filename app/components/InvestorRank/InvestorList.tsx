@@ -2,9 +2,12 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { InvestorCard } from './InvestorCard';
+import { InvestorTable } from './InvestorTable';
 import { SearchBar } from './SearchBar';
 import { investors } from './investorData';
 import { Investor } from './types';
+
+type ViewMode = 'card' | 'table';
 
 export const InvestorList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +15,7 @@ export const InvestorList: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('card');
 
   // Load investors from JSON on component mount
   useEffect(() => {
@@ -145,77 +149,117 @@ export const InvestorList: React.FC = () => {
         {/* Search Bar */}
         <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
+        {/* View Toggle */}
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex rounded-lg bg-white shadow-md p-1 gap-1">
+            <button
+              onClick={() => setViewMode('card')}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                viewMode === 'card'
+                  ? 'bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              Card View
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                viewMode === 'table'
+                  ? 'bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Table View
+            </button>
+          </div>
+        </div>
+
         {/* Results Info */}
         <div className="mb-8">
           <p className="text-gray-600 text-center text-lg">
             {searchTerm.trim() === ''
-              ? `Showing ${displayedInvestors.length.toLocaleString()} of ${filteredInvestors.length.toLocaleString()} investors`
+              ? `Showing ${viewMode === 'table' ? filteredInvestors.length.toLocaleString() : displayedInvestors.length.toLocaleString()} of ${filteredInvestors.length.toLocaleString()} investors`
               : `Found ${filteredInvestors.length.toLocaleString()} investors matching "${searchTerm}"`}
           </p>
         </div>
 
-        {/* Investor Grid */}
+        {/* Investor Content */}
         {filteredInvestors.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-              {displayedInvestors.map((investor) => (
-                <div
-                  key={investor.id}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${(parseInt(investor.id) % 24) * 50}ms` }}
-                >
-                  <InvestorCard investor={investor} />
-                </div>
-              ))}
-            </div>
-
-            {/* Loading indicator */}
-            {isLoading && (
-              <div className="text-center py-12">
-                <div className="inline-flex items-center gap-3 text-blue-600 bg-white px-6 py-3 rounded-xl shadow-md">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                  <span className="text-lg font-medium">Loading more investors...</span>
-                </div>
+            {viewMode === 'table' ? (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <InvestorTable investors={filteredInvestors} />
               </div>
-            )}
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                  {displayedInvestors.map((investor) => (
+                    <div
+                      key={investor.id}
+                      className="animate-fade-in-up"
+                      style={{ animationDelay: `${(parseInt(investor.id) % 24) * 50}ms` }}
+                    >
+                      <InvestorCard investor={investor} />
+                    </div>
+                  ))}
+                </div>
 
-            {/* Load more button */}
-            {hasMore && !isLoading && (
-              <div className="text-center py-12">
-                <button
-                  onClick={() => {
-                    setIsLoading(true);
-                    setTimeout(() => {
-                      setDisplayedCount(prev => Math.min(prev + 48, filteredInvestors.length));
-                      setIsLoading(false);
-                    }, 200);
-                  }}
-                  className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                >
-                  Load More Investors ({Math.min(48, filteredInvestors.length - displayedCount)} more)
-                </button>
-                <p className="text-gray-500 text-sm mt-3">
-                  Or scroll down to auto-load more
-                </p>
-              </div>
-            )}
-
-            {/* End of list indicator */}
-            {!hasMore && filteredInvestors.length > 0 && (
-              <div className="text-center py-12">
-                <div className="bg-white rounded-xl shadow-md p-6 max-w-md mx-auto">
-                  <div className="text-green-500 mb-3">
-                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                {/* Loading indicator */}
+                {isLoading && (
+                  <div className="text-center py-12">
+                    <div className="inline-flex items-center gap-3 text-blue-600 bg-white px-6 py-3 rounded-xl shadow-md">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                      <span className="text-lg font-medium">Loading more investors...</span>
+                    </div>
                   </div>
-                  <p className="text-gray-700 font-semibold text-lg">All investors loaded!</p>
-                  <p className="text-gray-500 text-sm mt-2">
-                    Showing all {filteredInvestors.length.toLocaleString()} investors
-                    {searchTerm && ` matching "${searchTerm}"`}
-                  </p>
-                </div>
-              </div>
+                )}
+
+                {/* Load more button */}
+                {hasMore && !isLoading && (
+                  <div className="text-center py-12">
+                    <button
+                      onClick={() => {
+                        setIsLoading(true);
+                        setTimeout(() => {
+                          setDisplayedCount(prev => Math.min(prev + 48, filteredInvestors.length));
+                          setIsLoading(false);
+                        }, 200);
+                      }}
+                      className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                    >
+                      Load More Investors ({Math.min(48, filteredInvestors.length - displayedCount)} more)
+                    </button>
+                    <p className="text-gray-500 text-sm mt-3">
+                      Or scroll down to auto-load more
+                    </p>
+                  </div>
+                )}
+
+                {/* End of list indicator */}
+                {!hasMore && filteredInvestors.length > 0 && (
+                  <div className="text-center py-12">
+                    <div className="bg-white rounded-xl shadow-md p-6 max-w-md mx-auto">
+                      <div className="text-green-500 mb-3">
+                        <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <p className="text-gray-700 font-semibold text-lg">All investors loaded!</p>
+                      <p className="text-gray-500 text-sm mt-2">
+                        Showing all {filteredInvestors.length.toLocaleString()} investors
+                        {searchTerm && ` matching "${searchTerm}"`}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </>
         ) : (

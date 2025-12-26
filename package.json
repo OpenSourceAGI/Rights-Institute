@@ -50,6 +50,8 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@types/swagger-ui-react": "^5.18.0",
     "@vitejs/plugin-react": "^5.1.2",
+    "ag-grid-community": "^35.0.0",
+    "ag-grid-react": "^35.0.0",
     "better-auth": "^1.4.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
