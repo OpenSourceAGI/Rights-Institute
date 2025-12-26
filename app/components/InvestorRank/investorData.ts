@@ -3,7 +3,7 @@ import rawData from './vc-rank.json';
 
 export function transformInvestorData(rawData: RawInvestorData[]): Investor[] {
   console.log('Transforming investor data:', rawData.length, 'items');
-  
+
   return rawData.map((item, index) => {
     try {
       return {
@@ -47,5 +47,3 @@ export function transformInvestorData(rawData: RawInvestorData[]): Investor[] {
 }
 
 export const investors: Investor[] = transformInvestorData(rawData);
-console.log('Exported investors:', investors.length, 'items');
-console.log('First investor:', investors[0]); 
