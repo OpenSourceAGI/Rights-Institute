@@ -15,6 +15,13 @@
       "when": 1766708732404,
       "tag": "0001_curved_sersi",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1766719429590,
+      "tag": "0002_third_invisible_woman",
+      "breakpoints": true
     }
   ]
 }

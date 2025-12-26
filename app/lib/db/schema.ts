@@ -198,3 +198,31 @@ export const documents = sqliteTable('documents', {
     .notNull()
     .default(sql`(unixepoch())`),
 });
+
+export const customButtons = sqliteTable('customButtons', {
+  id: text('id').primaryKey(),
+  userId: text('userId')
+    .notNull()
+    .references(() => user.id),
+  label: text('label').notNull(),
+  url: text('url').notNull(),
+  description: text('description'),
+  icon: text('icon'),
+  color: text('color'),
+  category: text('category'),
+  isActive: integer('isActive', {
+    mode: 'boolean',
+  })
+    .notNull()
+    .default(true),
+  createdAt: integer('createdAt', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: integer('updatedAt', {
+    mode: 'timestamp',
+  })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});

@@ -351,6 +351,18 @@ function DashboardContent() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/custom-buttons">
+              <Button variant="outline" size="sm" className="bg-blue-600/20 border-blue-600/50 hover:bg-blue-600/30 text-blue-400">
+                <Sparkles className="h-4 w-4 mr-2" />
+                Custom Buttons
+              </Button>
+            </Link>
+            <Link href="/api-tester">
+              <Button variant="outline" size="sm" className="bg-purple-600/20 border-purple-600/50 hover:bg-purple-600/30 text-purple-400">
+                <FileText className="h-4 w-4 mr-2" />
+                API Tester
+              </Button>
+            </Link>
             {user && (
               <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700">
                 {user.image && (
