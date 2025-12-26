@@ -258,7 +258,7 @@
         }
       }
     },
-    "/api/auth/session": {
+    "/api/auth/get-session": {
       "get": {
         "tags": ["Authentication"],
         "summary": "Get current session",
