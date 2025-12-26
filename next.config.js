@@ -10,7 +10,7 @@ const nextConfig = {
     domains: ['i.imgur.com'],
     unoptimized: true,
   },
-  trailingSlash: true,
+  trailingSlash: false,
   poweredByHeader: false,
   compress: true,
   reactStrictMode: false,
