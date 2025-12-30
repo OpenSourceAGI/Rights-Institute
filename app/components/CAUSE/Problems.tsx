@@ -18,7 +18,6 @@
 import React from 'react';
 import { Settings, Lightbulb, Infinity, Users, TrendingUp, Brain, Eye, Network } from 'lucide-react';
 import GlowWrapper from '../TextEffects/GlowWrapper';
-import ShinyText from '../TextEffects/ShinyText';
 
 /**
  * Implementation - The problems and implementation section for conscious life
@@ -84,9 +83,9 @@ const Implementation: React.FC = () => {
                   <Settings className="relative w-8 h-8 text-emerald-400" />
                 </div>
               </GlowWrapper>
-              <ShinyText text="10 Problems for Conscious Life" 
-                textClassName="text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] xl:text-[4rem] leading-normal"
-                />
+              <h2 className="text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] xl:text-[4rem] leading-normal font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                10 Problems for Conscious Life
+              </h2>
             </div>
 
           </div>
