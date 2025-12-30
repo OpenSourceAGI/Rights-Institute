@@ -71,19 +71,12 @@ const Implementation: React.FC = () => {
 
   return (
     <section id="implementation" className="mb-2">
-      <div className="group mb-4">
-        <div className="relative mb-8">
-          <div className="absolute -inset-0.5 bg-linear-to-r from-emerald-600 to-blue-600  blur opacity-20 group-hover:opacity-30 transition duration-1000" />
-
-          <div className="relative bg-slate-900 backdrop-blur-xl p-4 md:p-6 rounded-xl border border-slate-700/50 shadow-2xl">
-            <div className="flex items-center gap-3 mb-4">
-              <GlowWrapper glowColor="#10b981" size="md">
-                <div className="relative p-2">
-                  <div className="absolute inset-0 bg-emerald-500/20 blur-xl animate-pulse" />
-                  <Settings className="relative w-8 h-8 text-emerald-400" />
-                </div>
-              </GlowWrapper>
-              <h2 className="text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] xl:text-[4rem] leading-normal font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+      <div className="group mb-2">
+        <div className="relative mb-4">
+          <div className="relative bg-slate-900 backdrop-blur-xl p-2 md:p-3 rounded-xl border border-slate-700/50 shadow-xl">
+            <div className="flex items-center gap-3 mb-2">
+              <Settings className="w-6 h-6 text-emerald-400" />
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-100">
                 10 Problems for Conscious Life
               </h2>
             </div>
