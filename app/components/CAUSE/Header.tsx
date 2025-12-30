@@ -64,7 +64,7 @@ const Header: React.FC = () => {
   return (
     <div className="relative">
       {/* Globe Animation at the top */}
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-4">
         <GlowWrapper glowColor="#10b981" size="lg" className="rounded-lg">
       <div className="relative flex size-full max-w-2xl items-center justify-center overflow-visible rounded-lg border border-slate-700/50 bg-slate-900/60 backdrop-blur-xl px-8 pb-8 pt-8 md:shadow-xl">
         <span className=" whitespace-pre-wrap bg-linear-to-b from-blue-600 to-black-500 bg-clip-text text-center text-2xl font-semibold leading-none tracking-wider z-10 relative" style={{ fontVariant: 'small-caps', fontSize: '1.2rem' }}>

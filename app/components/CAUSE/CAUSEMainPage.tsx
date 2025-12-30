@@ -160,7 +160,7 @@ function CAUSEMainPage() {
       
       <div className="relative z-10">
         <Navigation />
-        <article className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-x-hidden">
+        <article className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 overflow-x-hidden">
           <Header />
           <Understandings />
           <Implementation />
