@@ -16,9 +16,8 @@
 
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Brain, Eye, Network, Handshake, Dna, Cpu, Zap, Calculator, Atom, Target, Layers, Clock, Waves } from 'lucide-react';
-import VaporizeTextCycle, { Tag } from '../TextEffects/VaporizeText';
 
 /**
  * Preamble - The main understandings section for the Rights Institute
@@ -38,27 +37,6 @@ import VaporizeTextCycle, { Tag } from '../TextEffects/VaporizeText';
  * ```
  */
 const Preamble: React.FC = () => {
-
-  const [fontSize, setFontSize] = useState("50rem");
-
-
-  useEffect(() => {
-    const updateFontSize = () => {
-      if (window.innerWidth < 768) {
-        setFontSize("20rem"); // Mobile
-      } else if (window.innerWidth < 1024) {
-        setFontSize("40rem"); // Tablet
-      } else {
-        setFontSize("60rem"); // Desktop
-      }
-    };
-
-    updateFontSize();
-    window.addEventListener('resize', updateFontSize);
-    return () => window.removeEventListener('resize', updateFontSize);
-  }, []);
-
-
   return (
     <section id="preamble" className="mb-16">
       {/* Title Card */}
@@ -68,29 +46,8 @@ const Preamble: React.FC = () => {
           <div className="relative bg-slate-900 backdrop-blur-xl p-6 rounded-xl border border-slate-700/50 shadow-2xl w-full">
             <div className="flex items-center gap-3 w-full">
               <Atom className=" text-blue-400" />
-              <h2 className="text-xl md:text-md font-bold bg-linear-to-r from-blue-400 to-emerald-400 bg-clip-text w-full">
-
-
-
-                <VaporizeTextCycle
-                  texts={["10 Understandings of Conscious Life"]}
-                  font={{
-                    fontFamily: "sans-serif",
-                    fontSize: fontSize,
-                    fontWeight: 700,
-                  }}
-                  color="rgb(147, 197, 253)"
-                  spread={3}
-                  density={4}
-                  animation={{
-                    vaporizeDuration: 3,
-                    fadeInDuration: 2,
-                    waitDuration: 1,
-                  }}
-                  direction="left-to-right"
-                  alignment="center"
-                  tag={Tag.H3}
-                />
+              <h2 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent w-full">
+                10 Understandings of Conscious Life
               </h2>
             </div>
           </div>
