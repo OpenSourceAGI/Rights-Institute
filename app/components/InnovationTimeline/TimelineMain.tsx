@@ -760,7 +760,7 @@ export default function InnovationTimelines() {
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="pl-7 pr-7 h-8 w-48 text-xs border transition-all duration-300 focus:border-primary focus:shadow-lg focus:shadow-primary/20 bg-background/80 backdrop-blur-sm"
+                className="pl-7 pr-7 h-8 w-28 sm:w-48 text-xs border transition-all duration-300 focus:border-primary focus:shadow-lg focus:shadow-primary/20 bg-background/80 backdrop-blur-sm"
               />
               {searchQuery && (
                 <Button
@@ -782,14 +782,14 @@ export default function InnovationTimelines() {
               className="h-8 px-2 border transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/20 bg-background/80 backdrop-blur-sm group flex items-center gap-1"
               title={`Sort by ${sortOrder === "asc" ? "Newest" : "Oldest"}`}
             >
-              <Hourglass 
+              <Hourglass
                 className={`w-4 h-4 transition-all duration-500 ${
-                  sortOrder === "asc" 
-                    ? "rotate-0" 
+                  sortOrder === "asc"
+                    ? "rotate-0"
                     : "rotate-180"
-                } group-hover:scale-110`} 
+                } group-hover:scale-110`}
               />
-              <span className="text-xs font-medium">
+              <span className="hidden sm:inline text-xs font-medium">
                 {sortOrder === "asc" ? "Newest" : "Oldest"}
               </span>
             </Button>
@@ -825,8 +825,8 @@ export default function InnovationTimelines() {
       </header>
 
       {/* Main Content with Enhanced Effects */}
-      <main className="container py-12 relative">
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-in fade-in-50 slide-in-from-top-6 duration-1000 delay-200">
+      <main className="container py-6 sm:py-12 relative">
+          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-in fade-in-50 slide-in-from-top-6 duration-1000 delay-200">
             {debouncedSearchQuery
               ? `Found ${totalFilteredInnovations} innovations matching "${debouncedSearchQuery}"`
               : searchQuery
@@ -834,12 +834,12 @@ export default function InnovationTimelines() {
                 : ""}
           </p>
 
-        <Separator className="mb-12 bg-gradient-to-r from-transparent via-border to-transparent" />
+        <Separator className="mb-6 sm:mb-12 bg-gradient-to-r from-transparent via-border to-transparent" />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Tabs in header style but within Tabs provider */}
-          <div className="relative mb-8">
-            <TabsList className="grid w-full grid-cols-9 h-10 bg-muted/50 backdrop-blur-sm border-2 border-muted">
+          <div className="relative mb-8 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+            <TabsList className="flex w-max sm:w-full sm:grid sm:grid-cols-9 h-10 bg-muted/50 backdrop-blur-sm border-2 border-muted min-w-full">
               {[
                 { value: "information-technology", icon: Computer, label: "IT", fullLabel: "Information Technology" },
                 { value: "programming-tools", icon: Code, label: "Code", fullLabel: "Programming Tools" },
@@ -918,25 +918,24 @@ export default function InnovationTimelines() {
               className="space-y-8 animate-in fade-in-50 slide-in-from-bottom-4 duration-500"
             >
               <Card className="border-2 border-muted bg-gradient-to-r from-background to-muted/20 shadow-xl">
-                <CardContent className="p-8">
-                  <div className="flex items-center justify-between mb-8">
+                <CardContent className="p-4 sm:p-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
                     <div className="flex items-center group">
-                      <div className="relative mr-4">
-                        <tab.icon className="w-10 h-10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-6" />
+                      <div className="relative mr-3 sm:mr-4">
+                        <tab.icon className="w-7 h-7 sm:w-10 sm:h-10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-6" />
                         <div className="absolute -inset-2 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                       <div>
-                        <h2 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                        <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                           {tab.title}
                         </h2>
-                        <p className="text-muted-foreground mt-1">
+                        <p className="text-muted-foreground text-sm sm:text-base mt-1">
                           Discover the evolution of {tab.title.toLowerCase()}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
-                      
-                      <Badge variant="secondary" className="text-sm px-3 py-1">
+                      <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1">
                         {sortOrder === "asc" ? "↑ Chronological" : "↓ Reverse"}
                       </Badge>
                     </div>
