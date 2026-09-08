@@ -30,3 +30,49 @@ For Google One Tap, also add your local and production origins (e.g.
 `http://localhost:3000`, `https://rights.institute`) as **Authorized
 JavaScript origins** — One Tap validates the origin the prompt is served
 from, separately from the OAuth redirect URIs.
+
+## Setting these on Cloudflare
+
+The deployed Worker does not read your local `.env`. Set each value as a
+Worker secret (or as a var in the Cloudflare dashboard) and redeploy:
+
+```bash
+wrangler secret put BETTER_AUTH_SECRET
+wrangler secret put TURSO_DATABASE_URL
+wrangler secret put TURSO_AUTH_TOKEN
+wrangler secret put GOOGLE_CLIENT_ID
+wrangler secret put GOOGLE_CLIENT_SECRET
+wrangler secret put AUTH_RESEND_KEY
+```
+
+Everything is read per request through `lib/env.ts`'s `getEnv()` — the
+Cloudflare runtime `env` first, then `process.env` — so a rotated secret
+takes effect without a rebuild.
+
+## Checking what the deployment actually sees
+
+`GET /api/health` reports which configuration groups the running instance
+can read (presence only, never values):
+
+```bash
+curl -s https://rights.institute/api/health
+```
+
+```json
+{
+  "status": "degraded",
+  "config": { "auth": false, "database": false, "google": false, "magicLinkEmail": false },
+  "missing": ["BETTER_AUTH_SECRET", "TURSO_DATABASE_URL"]
+}
+```
+
+A `degraded` status is the first thing to check when `/api/auth/get-session`
+misbehaves or the browser console warns `GOOGLE_CLIENT_ID is not set` — see
+[Authentication](/docs/authentication) for what each missing var disables.
+
+<Callout type="warn">
+  `TURSO_DATABASE_URL` is required, including in local dev. The app uses the
+  libSQL **web** client (the only one that runs on Cloudflare Workers), which
+  supports `libsql:`/`https:`/`wss:` URLs only — there is no local `file:`
+  database fallback.
+</Callout>
