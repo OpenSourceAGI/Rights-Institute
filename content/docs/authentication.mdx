@@ -146,3 +146,29 @@ Google One Tap validates the page **origin**, separate from OAuth redirect
 URIs — see [Environment Variables](/docs/environment-variables) for the
 exact Google Cloud Console settings you need (Authorized JavaScript origins
 in addition to the OAuth callback URLs).
+
+## When configuration is missing
+
+Auth is built lazily, from the runtime env, on the first request that needs
+it — not at module import — and each piece degrades on its own:
+
+| Missing | Effect |
+|---|---|
+| `BETTER_AUTH_SECRET` or `TURSO_DATABASE_URL` | Auth can't start at all: session reads answer `200 null` (signed out) and every other `/api/auth/*` endpoint answers `503 {"error":"auth_unavailable","missing":[…]}` |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google sign-in and One Tap are skipped; magic-link sign-in still works |
+| `AUTH_RESEND_KEY` | Magic-link emails aren't sent (the link is logged instead) |
+
+The signed-out fallback is deliberate. `GET /api/auth/get-session` runs on
+every page load, so answering it with a 500 breaks the session hook and
+takes the whole page down with it; answering "signed out" keeps the site
+usable while the real reason is logged server-side (`wrangler tail`) as
+`[auth] … auth is not configured, missing: …`.
+
+To check what the *running* deployment can see without reading logs:
+
+```bash
+curl -s https://rights.institute/api/health
+# {"status":"degraded","config":{"auth":false,…},"missing":["BETTER_AUTH_SECRET"]}
+```
+
+It reports presence only, never values.
