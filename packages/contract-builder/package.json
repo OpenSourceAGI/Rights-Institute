@@ -1,0 +1,24 @@
+{
+  "name": "@rights/contract-builder",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Contract generator: contractor agreements, employment agreements, and co-founder agreements, with live preview and signature capture.",
+  "license": "rights.institute/prosper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceagi/rights-institute",
+    "directory": "packages/contract-builder"
+  },
+  "exports": {
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@rights/ui": "workspace:*",
+    "lucide-react": "^1.16.0"
+  },
+  "peerDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

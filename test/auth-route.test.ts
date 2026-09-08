@@ -3,7 +3,7 @@ import { env as cfEnv } from 'cloudflare:workers';
 
 const handler = vi.fn();
 
-vi.mock('@/lib/auth', () => ({
+vi.mock('@rights/auth', () => ({
   get auth() {
     return { handler };
   },

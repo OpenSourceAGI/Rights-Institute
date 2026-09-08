@@ -20,26 +20,90 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./app/*"
+      "@rights/animations/*": [
+        "./packages/animations/src/*"
       ],
-      "@/components/*": [
-        "components/*"
+      "@rights/auth": [
+        "./packages/auth/src/index.ts"
       ],
-      "@/ui/*": [
-        "components/ui/*"
+      "@rights/auth/*": [
+        "./packages/auth/src/*"
       ],
-      "@/types/*": [
-        "./app/types/*"
+      "@rights/cause": [
+        "./packages/cause/src/index.ts"
+      ],
+      "@rights/cause/*": [
+        "./packages/cause/src/*"
+      ],
+      "@rights/contract-builder/*": [
+        "./packages/contract-builder/src/*"
+      ],
+      "@rights/credit": [
+        "./packages/credit/src/index.ts"
+      ],
+      "@rights/credit/*": [
+        "./packages/credit/src/*"
+      ],
+      "@rights/db": [
+        "./packages/db/src/index.ts"
+      ],
+      "@rights/db/*": [
+        "./packages/db/src/*"
+      ],
+      "@rights/env": [
+        "./packages/env/src/index.ts"
+      ],
+      "@rights/env/*": [
+        "./packages/env/src/*"
+      ],
+      "@rights/innovation-timeline": [
+        "./packages/innovation-timeline/src/index.ts"
+      ],
+      "@rights/innovation-timeline/*": [
+        "./packages/innovation-timeline/src/*"
+      ],
+      "@rights/investor-rank": [
+        "./packages/investor-rank/src/index.ts"
+      ],
+      "@rights/investor-rank/*": [
+        "./packages/investor-rank/src/*"
+      ],
+      "@rights/prosper-license/*": [
+        "./packages/prosper-license/src/*"
+      ],
+      "@rights/site-shell/*": [
+        "./packages/site-shell/src/*"
+      ],
+      "@rights/startup-tools": [
+        "./packages/startup-tools/src/index.ts"
+      ],
+      "@rights/startup-tools/*": [
+        "./packages/startup-tools/src/*"
+      ],
+      "@rights/terms-privacy": [
+        "./packages/terms-privacy/src/index.ts"
+      ],
+      "@rights/terms-privacy/*": [
+        "./packages/terms-privacy/src/*"
+      ],
+      "@rights/text-effects/*": [
+        "./packages/text-effects/src/*"
+      ],
+      "@rights/ui/*": [
+        "./packages/ui/src/*"
       ],
       "@/lib/*": [
         "./lib/*"
       ],
-      "@/sample-data/*": [
-        "./app/sample-data/*"
+      "@/*": [
+        "./app/*"
       ]
     },
-    "types": ["@cloudflare/workers-types", "vitest/globals", "@testing-library/jest-dom"],
+    "types": [
+      "@cloudflare/workers-types",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
     "plugins": [
       {
         "name": "next"
@@ -50,8 +114,9 @@
     "app/**/*.ts",
     "app/**/*.tsx",
     "lib/**/*.ts",
-    "components/**/*.ts",
-    "components/**/*.tsx",
+    "packages/*/src/**/*.ts",
+    "packages/*/src/**/*.tsx",
+    "packages/*/src/**/*.jsx",
     "next-env.d.ts",
     "out/types/**/*.ts",
     ".next/types/**/*.ts",

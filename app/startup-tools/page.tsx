@@ -1,5 +1,5 @@
 import React from 'react';
-import StartupTools from '../../components/StartupTools/StartupTools';
+import StartupTools from '@rights/startup-tools/StartupTools';
 
 export default function StartupToolsPage() {
   return <StartupTools />;

@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import CREDIT from '../../components/CREDIT/CREDIT';
+import CREDIT from '@rights/credit/CREDIT';
 
 /**
  * CREDIT Page Component

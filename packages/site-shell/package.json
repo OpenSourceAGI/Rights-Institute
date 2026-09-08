@@ -1,0 +1,26 @@
+{
+  "name": "@rights/site-shell",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Site chrome shared across routes: top navigation, hero banner, footer, document navigation, and the docs MDX components.",
+  "license": "rights.institute/prosper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceagi/rights-institute",
+    "directory": "packages/site-shell"
+  },
+  "exports": {
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@rights/auth": "workspace:*",
+    "fumadocs-ui": "^16.15.1",
+    "lucide-react": "^1.16.0"
+  },
+  "peerDependencies": {
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

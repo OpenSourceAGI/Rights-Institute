@@ -1,0 +1,1 @@
+export { InvestorList } from './InvestorList';

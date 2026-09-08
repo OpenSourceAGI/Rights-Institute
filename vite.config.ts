@@ -4,6 +4,7 @@ import { cloudflare } from '@cloudflare/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import { fumadocsMdx } from 'fumadocs-mdx/vite';
 import { resolve } from 'path';
+import { workspaceAliases } from './workspace-aliases';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -36,18 +37,17 @@ export default defineConfig({
     include: ['globe.gl', 'three']
   },
   resolve: {
-    alias: {
+    // Array form (not the object map) so the '@rights/*' entries can be
+    // regexes: the subpath rule has to be tried before the bare-name one.
+    alias: [
+      ...workspaceAliases(__dirname),
       // Specific aliases must precede the bare '@' alias — Vite matches them
-      // in insertion order, so '@' first would swallow '@/lib/*' etc.
-      '@/components': resolve(__dirname, './components'),
-      '@/ui': resolve(__dirname, './components/ui'),
-      '@/lib': resolve(__dirname, './lib'),
-      '@/types': resolve(__dirname, './app/types'),
-      '@/sample-data': resolve(__dirname, './app/sample-data'),
-      '@': resolve(__dirname, './app'),
-      'three/webgpu': 'three/examples/jsm/renderers/webgpu/WebGPURenderer.js',
-      'three/tsl': 'three/examples/jsm/nodes/Nodes.js'
-    }
+      // in order, so '@' first would swallow '@/lib/*' etc.
+      { find: /^@\/lib\/(.*)$/, replacement: `${resolve(__dirname, './lib')}/$1` },
+      { find: /^@\/(.*)$/, replacement: `${resolve(__dirname, './app')}/$1` },
+      { find: 'three/webgpu', replacement: 'three/examples/jsm/renderers/webgpu/WebGPURenderer.js' },
+      { find: 'three/tsl', replacement: 'three/examples/jsm/nodes/Nodes.js' },
+    ]
   },
   define: {
     global: 'globalThis',
