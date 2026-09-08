@@ -1,0 +1,13 @@
+{
+  "name": "@rights/prosper-coin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Solidity contracts for the PROSPER token and its revenue sharing.",
+  "license": "rights.institute/prosper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceagi/rights-institute",
+    "directory": "packages/prosper-coin"
+  }
+}

@@ -1,7 +1,7 @@
 import { source } from '@/lib/source';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { notFound } from 'next/navigation';
-import { getMDXComponents } from '@/components/Docs/mdx-components';
+import { getMDXComponents } from '@rights/site-shell/mdx-components';
 import type { Metadata } from 'next';
 
 export default async function Page({ params }: { params: Promise<{ slug?: string[] }> }) {

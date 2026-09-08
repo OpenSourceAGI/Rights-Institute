@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
-import { getEnv } from '@/lib/env';
-import { missingAuthEnv } from '@/lib/auth-config';
+import { getEnv } from '@rights/env';
+import { missingAuthEnv } from '@rights/auth/auth-config';
 
 /**
  * Deployment diagnostics: which configuration the running instance can

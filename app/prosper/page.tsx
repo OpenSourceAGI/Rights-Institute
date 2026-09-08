@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Textarea } from '../../components/ui/textarea';
-import { Badge } from '../../components/ui/badge';
-import { Separator } from '../../components/ui/separator';
+import { Card, CardContent, CardHeader, CardTitle } from '@rights/ui/card';
+import { Button } from '@rights/ui/button';
+import { Input } from '@rights/ui/input';
+import { Label } from '@rights/ui/label';
+import { Textarea } from '@rights/ui/textarea';
+import { Badge } from '@rights/ui/badge';
+import { Separator } from '@rights/ui/separator';
 
 import { 
   FileText, 
@@ -47,9 +47,9 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { codecraftStudioData } from '../sample-data/codecraft-studio';
-import type { IndividualAuthor, Organization, LicenseConfig } from '../types/prosper-license-types';
-import { licenseTypes, type LicenseType, type SampleLicense } from '../../lib/license-types';
+import { codecraftStudioData } from '@rights/prosper-license/sample-data/codecraft-studio';
+import type { IndividualAuthor, Organization, LicenseConfig } from '@rights/prosper-license/prosper-license-types';
+import { licenseTypes, type LicenseType, type SampleLicense } from '@rights/prosper-license/license-types';
 
 // Icon mapping for dynamic icon rendering
 const iconMap: Record<string, any> = {

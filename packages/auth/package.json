@@ -1,0 +1,31 @@
+{
+  "name": "@rights/auth",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "better-auth setup: the server instance (@rights/auth), the browser client, request-time config checks, and the React sign-in components.",
+  "license": "rights.institute/prosper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceagi/rights-institute",
+    "directory": "packages/auth"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@rights/db": "workspace:*",
+    "@rights/env": "workspace:*",
+    "better-auth": "^1.6.11",
+    "drizzle-orm": "^0.45.2",
+    "resend": "^6.12.3"
+  },
+  "peerDependencies": {
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

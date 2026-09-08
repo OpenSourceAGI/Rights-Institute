@@ -7,7 +7,7 @@ import {
   googleCredentials,
   isAuthConfigured,
   missingAuthEnv,
-} from '@/lib/auth-config';
+} from '@rights/auth/auth-config';
 
 const TOUCHED = [
   ...REQUIRED_AUTH_ENV,

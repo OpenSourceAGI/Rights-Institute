@@ -14,7 +14,7 @@ sign in:
 
 ## Server setup
 
-`lib/auth.ts` configures `betterAuth()` with the Drizzle adapter, the Google
+`packages/auth/src/auth.ts` configures `betterAuth()` with the Drizzle adapter, the Google
 social provider, and three plugins:
 
 ```ts
@@ -32,7 +32,7 @@ endpoint.
 
 ## Client setup
 
-`lib/auth-client.ts` registers the matching `oneTapClient` plugin, which
+`packages/auth/src/auth-client.ts` registers the matching `oneTapClient` plugin, which
 knows how to talk to that endpoint. The one thing it needs up front is the
 Google client ID — and getting that into the browser correctly is the part
 worth understanding.
@@ -75,7 +75,7 @@ const googleClientId = getEnv('GOOGLE_CLIENT_ID') ?? '';
 />
 ```
 
-`lib/auth-client.ts` reads it back out of the DOM at module-eval time in the
+`packages/auth/src/auth-client.ts` reads it back out of the DOM at module-eval time in the
 browser (this runs before any client component mounts, since the script tag
 is server-rendered into the initial HTML and better-auth's `oneTapClient`
 plugin needs the client ID synchronously at `createAuthClient()` time — it
@@ -113,7 +113,7 @@ calling `google.accounts.id.initialize`/`prompt`, exponential-backoff
 retries, and POSTing the resulting ID token to `/api/auth/one-tap/callback`
 — none of that needs to be hand-rolled.
 
-`components/Auth/GoogleOneTap.tsx` is a tiny client component mounted in the
+`packages/auth/src/GoogleOneTap.tsx` is a tiny client component mounted in the
 root layout that triggers the prompt once per page load, but only after the
 current session has resolved, only if the visitor isn't already signed in,
 and only if a client ID actually made it to the browser:

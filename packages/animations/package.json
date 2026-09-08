@@ -1,0 +1,24 @@
+{
+  "name": "@rights/animations",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Canvas/WebGL background animations: Game of Life, globe, quantum geometry, spiral. Subpath imports only — each pulls its own renderer.",
+  "license": "rights.institute/prosper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceagi/rights-institute",
+    "directory": "packages/animations"
+  },
+  "exports": {
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "cobe": "^2.0.1",
+    "gsap": "^3.15.0"
+  },
+  "peerDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

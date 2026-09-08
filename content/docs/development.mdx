@@ -46,7 +46,32 @@ bun run db:push       # push the schema straight to the database
 bun run db:studio     # open Drizzle Studio
 ```
 
-Schema lives in `lib/db/schema.ts`, migrations in `lib/db/migrations/`.
+Schema lives in `packages/db/src/schema.ts`, migrations in `packages/db/drizzle/`.
+
+## Repository layout
+
+The repo is a pnpm workspace. `app/` holds App Router routes and API
+handlers, `lib/` holds the little that is genuinely app-level (the Fumadocs
+source loader), and every feature — UI primitives, animations, auth, the
+database, and each document or tool — is a package under `packages/`:
+
+```
+packages/
+  ui/  animations/  text-effects/  site-shell/
+  auth/  db/  env/
+  cause/  credit/  contract-builder/  investor-rank/
+  innovation-timeline/  prosper-license/  prosper-coin/
+  startup-tools/  terms-privacy/
+```
+
+Import them as `@rights/<name>` where the package has a single public entry
+(`import { auth } from '@rights/auth'`), or by subpath where it does not
+(`import { Button } from '@rights/ui/button'`). Packages ship TypeScript —
+Vite compiles their source with the app, so there is no per-package build
+step. `@rights/*` resolves via aliases in `workspace-aliases.ts`, shared by
+`vite.config.ts`, `vitest.config.ts`, and `tsconfig.json`.
+
+`packages/README.md` lists what each package holds and how to add a new one.
 
 ## Docs site
 

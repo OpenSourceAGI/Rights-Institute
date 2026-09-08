@@ -1,4 +1,4 @@
-import PROSPERLicense from '../../../components/PROSPERLicense/PROSPER';
+import PROSPERLicense from '@rights/prosper-license/PROSPER';
 import { Metadata } from 'next';
 
 export async function generateStaticParams() {

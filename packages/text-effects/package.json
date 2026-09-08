@@ -1,0 +1,24 @@
+{
+  "name": "@rights/text-effects",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Animated text and card treatments: vaporize, particle, morph, shiny, meteors, border beam, glow. Subpath imports only.",
+  "license": "rights.institute/prosper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceagi/rights-institute",
+    "directory": "packages/text-effects"
+  },
+  "exports": {
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "framer-motion": "^12.39.0",
+    "lucide-react": "^1.16.0"
+  },
+  "peerDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

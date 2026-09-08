@@ -1,0 +1,29 @@
+{
+  "name": "@rights/cause",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The CAUSE document — 10 Understandings, 10 Rights, 10 Problems — as composable sections plus its full-page assembly.",
+  "license": "rights.institute/prosper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceagi/rights-institute",
+    "directory": "packages/cause"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@rights/animations": "workspace:*",
+    "@rights/site-shell": "workspace:*",
+    "@rights/text-effects": "workspace:*",
+    "lucide-react": "^1.16.0"
+  },
+  "peerDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import { missingAuthEnv } from '@/lib/auth-config';
+import { missingAuthEnv } from '@rights/auth/auth-config';
 
 /**
  * better-auth catch-all.
@@ -50,7 +50,7 @@ async function handle(request: Request): Promise<Response> {
   }
 
   try {
-    const { auth } = await import('@/lib/auth');
+    const { auth } = await import('@rights/auth');
     return await auth.handler(request);
   } catch (error) {
     console.error(

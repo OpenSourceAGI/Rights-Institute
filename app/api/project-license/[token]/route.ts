@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sampleLicenseDataByToken } from '../../../sample-data/codecraft-studio';
+import { sampleLicenseDataByToken } from '@rights/prosper-license/sample-data/codecraft-studio';
 
 // Required for static export
 export const dynamic = 'force-static';

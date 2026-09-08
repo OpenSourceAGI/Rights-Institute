@@ -106,6 +106,39 @@ See [`docs/development`](./content/docs/development.mdx) for the full guide, inc
 
 ---
 
+## Repository Layout
+
+A pnpm workspace: each feature is its own package, and `app/` is routing.
+
+```
+app/                 Next.js App Router routes and API handlers
+lib/                 App-level glue (the Fumadocs source loader)
+content/docs/        Markdown/MDX for the docs site
+packages/            One package per feature — see packages/README.md
+  ui/                shadcn/ui primitives + cn()
+  animations/        Canvas/WebGL backgrounds
+  text-effects/      Animated text and card treatments
+  site-shell/        Top nav, hero, footer, docs MDX components
+  auth/              better-auth server, client, and sign-in components
+  db/                Drizzle schema, libSQL client, migrations
+  env/               Worker-runtime-first env lookup
+  cause/             The CAUSE document
+  credit/            CREDIT
+  contract-builder/  Contract generators
+  investor-rank/     Investor ranking
+  innovation-timeline/  Innovation timeline
+  prosper-license/   PROSPER license
+  prosper-coin/      PROSPER token contracts (Solidity)
+  startup-tools/     Startup tools directory
+  terms-privacy/     Terms and privacy policy
+```
+
+Packages are imported as `@rights/<name>` (or `@rights/<name>/<file>`) and
+ship TypeScript with no build step of their own. [`packages/README.md`](./packages/README.md)
+covers how resolution works and how to add one.
+
+---
+
 ## Contributing
 
 PRs welcome — see the [Discussions](https://github.com/opensourceagi/rights-institute/discussions) board. Licensed under the [PROSPER License](https://rights.institute/prosper).

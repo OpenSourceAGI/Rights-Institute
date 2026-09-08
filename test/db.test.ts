@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { env as cfEnv } from 'cloudflare:workers';
-import { DatabaseConfigError, db } from '@/lib/db';
+import { DatabaseConfigError, db } from '@rights/db';
 
 function clear() {
   delete cfEnv.TURSO_DATABASE_URL;
