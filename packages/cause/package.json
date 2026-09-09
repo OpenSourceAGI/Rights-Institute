@@ -20,7 +20,7 @@
     "@rights/animations": "workspace:*",
     "@rights/site-shell": "workspace:*",
     "@rights/text-effects": "workspace:*",
-    "lucide-react": "^1.16.0"
+    "lucide-react": "^1.43.0"
   },
   "peerDependencies": {
     "react": "^19.2.6",
