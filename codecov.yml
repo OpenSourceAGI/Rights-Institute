@@ -1,0 +1,173 @@
+# Codecov configuration — https://docs.codecov.com/docs/codecov-yaml
+#
+# Coverage is produced by `pnpm run test:coverage` (Vitest, v8 provider) and
+# uploaded by `.github/workflows/ci.yml`. The `include`/`exclude` set that
+# decides which files are measured lives in `vitest.config.ts`; this file only
+# decides how Codecov reports on them.
+
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 2
+  round: down
+  range: "20...80"
+  status:
+    project:
+      default:
+        target: auto
+        # Small refactors should not fail the build over rounding noise.
+        threshold: 2%
+        informational: true
+    patch:
+      default:
+        target: 60%
+        threshold: 5%
+        informational: true
+
+# One flag per workspace package, so the Codecov UI can show which package a
+# change actually moved the needle in. Kept in sync with `packages/*` and with
+# WORKSPACE_PACKAGES in `workspace-aliases.ts`.
+flag_management:
+  default_rules:
+    carryforward: true
+
+flags:
+  animations:
+    paths:
+      - packages/animations/src
+  auth:
+    paths:
+      - packages/auth/src
+  cause:
+    paths:
+      - packages/cause/src
+  contract-builder:
+    paths:
+      - packages/contract-builder/src
+  credit:
+    paths:
+      - packages/credit/src
+  db:
+    paths:
+      - packages/db/src
+  env:
+    paths:
+      - packages/env/src
+  innovation-timeline:
+    paths:
+      - packages/innovation-timeline/src
+  investor-rank:
+    paths:
+      - packages/investor-rank/src
+  prosper-coin:
+    paths:
+      - packages/prosper-coin/src
+  prosper-license:
+    paths:
+      - packages/prosper-license/src
+  site-shell:
+    paths:
+      - packages/site-shell/src
+  startup-tools:
+    paths:
+      - packages/startup-tools/src
+  terms-privacy:
+    paths:
+      - packages/terms-privacy/src
+  text-effects:
+    paths:
+      - packages/text-effects/src
+  ui:
+    paths:
+      - packages/ui/src
+  app:
+    paths:
+      - app
+  lib:
+    paths:
+      - lib
+
+# Components mirror the flags above so the "components" section of the PR
+# comment (below) has something to render, and so each package gets its own
+# informational status check independent of the project-wide one.
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+        threshold: 2%
+        informational: true
+  individual_components:
+    - component_id: animations
+      paths:
+        - packages/animations/src
+    - component_id: auth
+      paths:
+        - packages/auth/src
+    - component_id: cause
+      paths:
+        - packages/cause/src
+    - component_id: contract-builder
+      paths:
+        - packages/contract-builder/src
+    - component_id: credit
+      paths:
+        - packages/credit/src
+    - component_id: db
+      paths:
+        - packages/db/src
+    - component_id: env
+      paths:
+        - packages/env/src
+    - component_id: innovation-timeline
+      paths:
+        - packages/innovation-timeline/src
+    - component_id: investor-rank
+      paths:
+        - packages/investor-rank/src
+    - component_id: prosper-coin
+      paths:
+        - packages/prosper-coin/src
+    - component_id: prosper-license
+      paths:
+        - packages/prosper-license/src
+    - component_id: site-shell
+      paths:
+        - packages/site-shell/src
+    - component_id: startup-tools
+      paths:
+        - packages/startup-tools/src
+    - component_id: terms-privacy
+      paths:
+        - packages/terms-privacy/src
+    - component_id: text-effects
+      paths:
+        - packages/text-effects/src
+    - component_id: ui
+      paths:
+        - packages/ui/src
+    - component_id: app
+      paths:
+        - app
+    - component_id: lib
+      paths:
+        - lib
+
+comment:
+  layout: "header, diff, flags, components, files, footer"
+  behavior: default
+  require_changes: false
+
+# Mirrors vitest.config.ts's coverage.exclude, so the two do not disagree about
+# what counts. Route shells and the re-export barrels carry no logic to cover.
+ignore:
+  - "**/*.test.{ts,tsx}"
+  - "**/*.d.ts"
+  - "**/node_modules/**"
+  - "app/**/page.tsx"
+  - "app/**/layout.tsx"
+  - "app/error.tsx"
+  - "app/not-found.tsx"
+  - "packages/*/src/index.ts"
+  - "test/**"

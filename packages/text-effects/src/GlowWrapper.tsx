@@ -64,7 +64,7 @@ const GlowWrapper: React.FC<GlowWrapperProps> = ({
       <span
         className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite]"
         style={{
-          background: `conic-gradient(from_90deg_at_50%_50%, ${glowColor}_0%, #505050_50%, ${glowColor}_100%)`
+          background: `conic-gradient(from 90deg at 50% 50%, ${glowColor} 0%, #505050 50%, ${glowColor} 100%)`
         }}
       />
       <span className="inline-flex h-full w-full items-center justify-center bg-slate-950/90 backdrop-blur-3xl">
