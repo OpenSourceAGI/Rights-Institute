@@ -16,7 +16,7 @@
   "dependencies": {
     "@rights/ui": "workspace:*",
     "grab-api.js": "^0.9.131",
-    "lucide-react": "^1.16.0"
+    "lucide-react": "^1.43.0"
   },
   "peerDependencies": {
     "next": "^16.2.6",

@@ -19,9 +19,9 @@
   "dependencies": {
     "@rights/db": "workspace:*",
     "@rights/env": "workspace:*",
-    "better-auth": "^1.6.11",
+    "better-auth": "^1.7.3",
     "drizzle-orm": "^0.45.2",
-    "resend": "^6.12.3"
+    "resend": "^6.26.0"
   },
   "peerDependencies": {
     "next": "^16.2.6",
