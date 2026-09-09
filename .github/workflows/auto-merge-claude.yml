@@ -20,14 +20,14 @@ jobs:
       - name: Enable auto-merge
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITH_TOKEN }}
           pull-request-number: ${{ github.event.pull_request.number }}
           merge-method: squash
 
       - name: Auto-approve
         uses: hmarr/auto-approve-action@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GIT_TOKEN }}
 
   delete-branch:
     runs-on: ubuntu-latest
@@ -41,4 +41,4 @@ jobs:
           echo "Deleting branch $BRANCH"
           git push origin --delete "$BRANCH"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
