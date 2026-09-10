@@ -6,4 +6,11 @@
  * their own subpaths (`@rights/auth/AuthProvider`, `@rights/auth/auth-client`)
  * so importing `auth` in a route handler doesn't drag client code with it.
  */
-export { auth, getAuth, AuthConfigError, missingAuthEnv, isAuthConfigured } from './auth';
+export {
+  auth,
+  getAuth,
+  AuthConfigError,
+  missingAuthEnv,
+  isAuthConfigured,
+  googleClientId,
+} from './auth';

@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { getEnv } from '@rights/env';
-import { missingAuthEnv } from '@rights/auth/auth-config';
+import { googleCredentials, missingAuthEnv } from '@rights/auth/auth-config';
 
 /**
  * Deployment diagnostics: which configuration the running instance can
@@ -17,7 +17,9 @@ export async function GET(): Promise<Response> {
     config: {
       auth: missing.length === 0,
       database: Boolean(getEnv('TURSO_DATABASE_URL')),
-      google: Boolean(getEnv('GOOGLE_CLIENT_ID') && getEnv('GOOGLE_CLIENT_SECRET')),
+      // Via googleCredentials() so this agrees with what auth actually does,
+      // including the NEXT_PUBLIC_ fallback for the client ID.
+      google: googleCredentials() !== null,
       magicLinkEmail: Boolean(getEnv('AUTH_RESEND_KEY')),
     },
     // Names of required-but-absent vars. Names only; never the values.
