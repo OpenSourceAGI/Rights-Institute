@@ -7,10 +7,10 @@ import * as schema from '@rights/db/schema';
 import { getEnv } from '@rights/env';
 import {
   AuthConfigError,
-  PROD_URL,
   authBaseURL,
   googleCredentials,
   missingAuthEnv,
+  trustedOrigins,
 } from './auth-config';
 
 const APP_NAME = 'Rights Institute';
@@ -38,10 +38,14 @@ function createAuth() {
     );
   }
 
+  // Undefined on purpose in production: better-auth then derives the origin
+  // per request. See the authBaseURL() comment for why guessing is worse.
+  const baseURL = authBaseURL();
+
   return betterAuth({
-    baseURL: authBaseURL(),
+    ...(baseURL ? { baseURL } : {}),
     secret: getEnv('BETTER_AUTH_SECRET'),
-    trustedOrigins: [PROD_URL, 'https://www.rights.institute', 'http://localhost:3000'],
+    trustedOrigins: trustedOrigins(),
     database: drizzleAdapter(db, {
       provider: 'sqlite',
       schema,
@@ -53,8 +57,11 @@ function createAuth() {
     },
     plugins: [
       // One Tap exchanges a Google ID token, so it is only useful when the
-      // Google provider above is configured.
-      ...(google ? [oneTap()] : []),
+      // Google provider above is configured. The client ID is passed
+      // explicitly as well: it is the audience the ID token is verified
+      // against, and being explicit keeps the check working even if the
+      // social provider is ever configured lazily.
+      ...(google ? [oneTap({ clientId: google.clientId })] : []),
       openAPI(),
       magicLink({
         expiresIn: 300,
@@ -100,4 +107,9 @@ export const auth = new Proxy({} as ReturnType<typeof createAuth>, {
   },
 });
 
-export { AuthConfigError, missingAuthEnv, isAuthConfigured } from './auth-config';
+export {
+  AuthConfigError,
+  missingAuthEnv,
+  isAuthConfigured,
+  googleClientId,
+} from './auth-config';

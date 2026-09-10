@@ -19,7 +19,7 @@ social provider, and three plugins:
 
 ```ts
 plugins: [
-  oneTap(),       // exposes POST /api/auth/one-tap/callback
+  oneTap({ clientId }), // exposes POST /api/auth/one-tap/callback
   openAPI(),
   magicLink({ /* ... */ }),
 ]
@@ -37,72 +37,60 @@ knows how to talk to that endpoint. The one thing it needs up front is the
 Google client ID — and getting that into the browser correctly is the part
 worth understanding.
 
-### Why the client ID isn't a `NEXT_PUBLIC_*` var
+### Getting the client ID into the browser
 
-The obvious move would be `NEXT_PUBLIC_GOOGLE_CLIENT_ID`, inlined into the
-client bundle at **build time** by Vite's `define` (the same mechanism
-[vinext](https://www.npmjs.com/package/vinext) uses to replicate Next.js's
-`NEXT_PUBLIC_*` convention). That works fine if the build step itself has
-the variable — but this app deploys to Cloudflare Workers, where env vars
-are just as commonly set as **runtime** vars/secrets (Cloudflare dashboard,
-or `wrangler secret put`), which the Worker only sees per-request, long
-after the bundle was built. A client ID set that way is invisible to a
-build-time `define` — the deployed bundle would have `undefined` baked in
-permanently until the next rebuild.
+`oneTapClient` needs the Google client ID before it can call
+`google.accounts.id.initialize`. Getting it there is the part worth
+understanding, because the obvious answers both fail on Cloudflare.
 
-Since `GOOGLE_CLIENT_ID` is already required for the server OAuth flow
-above, and a Google OAuth client ID isn't a secret (it's exposed in every
-OAuth redirect and by the GSI script itself), the simplest fix is to read it
-once per request on the server — where the Worker's runtime env **is**
-available — and hand it to the browser explicitly, instead of relying on
-build-time inlining at all.
+`NEXT_PUBLIC_GOOGLE_CLIENT_ID` is inlined at **build time**. That works only
+if the build has the value — but this app deploys to Cloudflare Workers,
+where env vars are just as commonly runtime vars/secrets (dashboard, or
+`wrangler secret put`) that the Worker only sees per request, long after the
+bundle was built. (vinext also does not currently inline `NEXT_PUBLIC_*`
+into the client bundle at all.)
 
-### How it's wired
+Reading it once per request in the root layout and serializing it into a
+`<script type="application/json">` tag doesn't work on its own either, which
+is what made One Tap silently never appear: the layout is *prerendered* on
+statically-generated routes, so the tag is baked at build time — with an
+empty string — and the value never changes at runtime.
 
-`app/layout.tsx` is a Server Component, so it can read the Worker's runtime
-env per request via `lib/env.ts`'s `getEnv()` (which checks
-`cloudflare:workers`'s `env` first, then falls back to `process.env` for
-local dev). It serializes the value into an inert JSON `<script>` tag in
-`<head>`:
+So three sources are tried, cheapest first:
 
-```tsx
-const googleClientId = getEnv('GOOGLE_CLIENT_ID') ?? '';
-// ...
-<script
-  id="google-client-id"
-  type="application/json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(googleClientId) }}
-/>
-```
+1. **`<script id="google-client-id">`** in the root layout. Free when the
+   layout was rendered per request.
+2. **`NEXT_PUBLIC_GOOGLE_CLIENT_ID`**, for deployments that do have the
+   value at build time.
+3. **`GET /api/client-config`**, an explicitly dynamic route that reads the
+   Worker's runtime env. Always correct, costs one request, and is only
+   reached when the two free sources came up empty.
 
-`packages/auth/src/auth-client.ts` reads it back out of the DOM at module-eval time in the
-browser (this runs before any client component mounts, since the script tag
-is server-rendered into the initial HTML and better-auth's `oneTapClient`
-plugin needs the client ID synchronously at `createAuthClient()` time — it
-can't be passed in later per-call):
+A Google OAuth client ID is public — it appears in every OAuth redirect and
+in the GSI script — so serving it from an endpoint discloses nothing. The
+client *secret* never leaves the server.
 
 ```ts
-function getGoogleClientId(): string {
-  if (typeof document === 'undefined') return '';
-  const el = document.getElementById('google-client-id');
-  if (!el?.textContent) return '';
-  try {
-    return JSON.parse(el.textContent) as string;
-  } catch {
-    return '';
-  }
-}
-
-export const googleClientId = getGoogleClientId();
-
 export const authClient = createAuthClient({
   plugins: [
     magicLinkClient(),
     oneTapClient({
-      clientId: googleClientId,
+      // A getter, not a value: better-auth reads `options.clientId` when the
+      // prompt is requested, so a client ID that arrives from source 3 a
+      // moment later still reaches Google. Reading it eagerly at
+      // `createAuthClient()` time was the other half of the bug.
+      get clientId() {
+        return cachedClientId || googleClientId();
+      },
       autoSelect: false,
       cancelOnTapOutside: true,
       context: 'signin',
+      // Google Identity Services defaults the prompt to FedCM, which
+      // declines to render in a lot of ordinary situations and hides the
+      // reason from `onPromptNotification`. The classic prompt is what
+      // actually displays.
+      promptOptions: { fedCM: false },
+      additionalOptions: { use_fedcm_for_prompt: false },
     }),
   ],
 });
@@ -113,25 +101,68 @@ calling `google.accounts.id.initialize`/`prompt`, exponential-backoff
 retries, and POSTing the resulting ID token to `/api/auth/one-tap/callback`
 — none of that needs to be hand-rolled.
 
-`packages/auth/src/GoogleOneTap.tsx` is a tiny client component mounted in the
-root layout that triggers the prompt once per page load, but only after the
-current session has resolved, only if the visitor isn't already signed in,
-and only if a client ID actually made it to the browser:
+`packages/auth/src/GoogleOneTap.tsx` is a tiny client component mounted in
+the root layout that triggers the prompt once per page load, but only after
+the current session has resolved, only if the visitor isn't already signed
+in, and only once a client ID has actually been resolved:
 
 ```tsx
 useEffect(() => {
-  if (isPending) return;         // wait until session is known
-  if (session) return;           // already signed in
-  if (!googleClientId) return;   // GOOGLE_CLIENT_ID not set anywhere the server could read it
-  authClient.oneTap({ callbackURL: '/dashboard' });
+  if (isPending) return;   // wait until the session is known
+  if (session) return;     // already signed in
+  (async () => {
+    const clientId = await ensureGoogleClientId();
+    if (!clientId) return; // Google isn't configured on this deployment
+    await authClient.oneTap({ callbackURL: '/dashboard' });
+  })();
 }, [isPending, session]);
 ```
 
-If One Tap never appears and there's a `GOOGLE_CLIENT_ID is not set`
-warning in the browser console, the server genuinely couldn't read the
-variable at request time — double check it's set (as `.env` locally, or as
-a Cloudflare Worker var/secret in production) and that the deployment
-actually restarted/redeployed after setting it.
+If One Tap never appears and the console carries
+`[auth] Google One Tap skipped — no Google client ID`, no source had it.
+Check what the running deployment can see:
+
+```bash
+curl -s https://rights.institute/api/client-config
+# {"googleClientId":"…apps.googleusercontent.com"}
+```
+
+An empty value there means `GOOGLE_CLIENT_ID` genuinely isn't set as a
+Cloudflare Worker var/secret (or in `.env` locally).
+
+### The base URL, and why Google OAuth was rejecting sign-ins
+
+better-auth builds the Google `redirect_uri` as
+`${baseURL}/api/auth/callback/google`, so the base URL has to match what is
+registered in the Google Cloud Console. `authBaseURL()` in
+`packages/auth/src/auth-config.ts` resolves it:
+
+```ts
+const explicit = getEnv('BETTER_AUTH_URL') || getEnv('NEXT_PUBLIC_APP_URL');
+if (explicit) return explicit;
+
+const nodeEnv = getEnv('NODE_ENV');
+if (nodeEnv === 'development' || nodeEnv === 'test') return 'http://localhost:3000';
+
+return undefined; // better-auth derives the origin from the request
+```
+
+Returning `undefined` is deliberate and is the normal case in production:
+better-auth then takes the origin from the incoming request, which is the
+only correct answer for a Worker that answers on `rights.institute`,
+`www.rights.institute` and `*.workers.dev` preview URLs alike.
+
+This replaced a `NODE_ENV === 'production' ? PROD_URL : 'http://localhost:3000'`
+fallback that broke Google sign-in outright. `getEnv('NODE_ENV')` reads
+`process.env` through a computed key, which no bundler can inline, and
+Workers don't set `NODE_ENV` in the runtime env — so the check read
+`undefined` in production, pinned the base URL to `http://localhost:3000`,
+and every Google sign-in asked Google for a localhost `redirect_uri`, which
+it rejects as `redirect_uri_mismatch`.
+
+`trustedOrigins()` covers the apex, `www`, and localhost, plus the origin of
+whatever `BETTER_AUTH_URL` / `NEXT_PUBLIC_APP_URL` is set to — so a preview
+deployment isn't turned away by the CSRF origin check.
 
 ## Regular "Sign in with Google" button
 

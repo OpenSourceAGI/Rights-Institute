@@ -3,7 +3,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { AuthProvider } from '@rights/auth/AuthProvider'
 import { GoogleOneTap } from '@rights/auth/GoogleOneTap'
-import { getEnv } from '@rights/env'
+import { TopNav } from '@rights/site-shell/TopNav'
+import { googleClientId } from '@rights/auth/auth-config'
 
 export const metadata: Metadata = {
   title: 'Rights for Carbon and Silicon Consciousness - Rights.Institute',
@@ -37,10 +38,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Read at request time (not build time) so a Google client ID set as a
-  // Cloudflare Worker runtime var/secret works without rebuilding — see the
-  // getGoogleClientId() comment in packages/auth/src/auth-client.ts for why.
-  const googleClientId = getEnv('GOOGLE_CLIENT_ID') ?? '';
+  // A best-effort inline copy of the Google client ID, so One Tap can start
+  // without a round trip when this layout happens to be rendered per request.
+  // It is deliberately *not* the only path: content routes are statically
+  // generated, which bakes this tag at build time — before a Cloudflare Worker
+  // var/secret exists — so the browser falls back to /api/client-config when
+  // what arrives here is empty. See packages/auth/src/auth-client.ts.
+  const clientId = googleClientId()
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -48,13 +52,15 @@ export default function RootLayout({
         <script
           id="google-client-id"
           type="application/json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(googleClientId) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(clientId) }}
         />
       </head>
       <body>
         <AuthProvider>
           <GoogleOneTap />
-          {children}
+          <TopNav />
+          {/* Clears the fixed nav bar (h-16) so page content isn't hidden under it. */}
+          <div className="pt-16">{children}</div>
         </AuthProvider>
       </body>
     </html>

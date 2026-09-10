@@ -4,14 +4,17 @@ import {
   AuthConfigError,
   REQUIRED_AUTH_ENV,
   authBaseURL,
+  googleClientId,
   googleCredentials,
   isAuthConfigured,
   missingAuthEnv,
+  trustedOrigins,
 } from '@rights/auth/auth-config';
 
 const TOUCHED = [
   ...REQUIRED_AUTH_ENV,
   'GOOGLE_CLIENT_ID',
+  'NEXT_PUBLIC_GOOGLE_CLIENT_ID',
   'GOOGLE_CLIENT_SECRET',
   'BETTER_AUTH_URL',
   'NEXT_PUBLIC_APP_URL',
@@ -80,6 +83,22 @@ describe('googleCredentials', () => {
   });
 });
 
+describe('googleClientId', () => {
+  it('is empty when nothing is configured', () => {
+    expect(googleClientId()).toBe('');
+  });
+
+  it('accepts the NEXT_PUBLIC_ copy for build-time-inlined deployments', () => {
+    cfEnv.NEXT_PUBLIC_GOOGLE_CLIENT_ID = 'public.apps.googleusercontent.com';
+    expect(googleClientId()).toBe('public.apps.googleusercontent.com');
+
+    // The runtime var wins, so rotating it on the Worker takes effect without
+    // a rebuild of the inlined copy.
+    cfEnv.GOOGLE_CLIENT_ID = 'runtime.apps.googleusercontent.com';
+    expect(googleClientId()).toBe('runtime.apps.googleusercontent.com');
+  });
+});
+
 describe('authBaseURL', () => {
   it('prefers BETTER_AUTH_URL, then NEXT_PUBLIC_APP_URL', () => {
     cfEnv.NEXT_PUBLIC_APP_URL = 'https://preview.example';
@@ -89,11 +108,45 @@ describe('authBaseURL', () => {
     expect(authBaseURL()).toBe('https://auth.example');
   });
 
-  it('falls back to the production URL in production and localhost otherwise', () => {
-    cfEnv.NODE_ENV = 'production';
-    expect(authBaseURL()).toBe('https://rights.institute');
-
+  it('uses localhost only when NODE_ENV explicitly says dev or test', () => {
     cfEnv.NODE_ENV = 'development';
     expect(authBaseURL()).toBe('http://localhost:3000');
+
+    cfEnv.NODE_ENV = 'test';
+    expect(authBaseURL()).toBe('http://localhost:3000');
+  });
+
+  it('is undefined with no configuration, so better-auth reads the request origin', () => {
+    // The regression this pins: Workers do not set NODE_ENV in the runtime
+    // env, so the old `NODE_ENV === 'production' ? PROD_URL : localhost`
+    // fallback resolved to http://localhost:3000 in production and every
+    // Google sign-in asked for a localhost redirect_uri.
+    expect(authBaseURL()).toBeUndefined();
+
+    cfEnv.NODE_ENV = 'production';
+    expect(authBaseURL()).toBeUndefined();
+  });
+});
+
+describe('trustedOrigins', () => {
+  it('always covers the apex, www and local origins', () => {
+    expect(trustedOrigins()).toEqual(
+      expect.arrayContaining([
+        'https://rights.institute',
+        'https://www.rights.institute',
+        'http://localhost:3000',
+      ]),
+    );
+  });
+
+  it('adds the configured base URL, so a preview deploy passes the origin check', () => {
+    cfEnv.BETTER_AUTH_URL = 'https://preview.rights.workers.dev/some/path';
+    expect(trustedOrigins()).toContain('https://preview.rights.workers.dev');
+  });
+
+  it('ignores a malformed configured URL rather than throwing', () => {
+    cfEnv.NEXT_PUBLIC_APP_URL = 'not a url';
+    expect(() => trustedOrigins()).not.toThrow();
+    expect(trustedOrigins()).toContain('https://rights.institute');
   });
 });
